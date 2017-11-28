@@ -65,5 +65,3 @@ void loop(){
   byte testString[] = "The quick brown fox jumps over the lazy dog";
   Serial.println(crc32(0, lookupTable, testString, sizeof(testString) - 1));
 }
-
-

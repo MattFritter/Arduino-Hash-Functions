@@ -35,4 +35,3 @@ void loop(){
   byte testString[] = "Hello World";
   Serial.println(hashPearson(testString, permutationTable, sizeof(testString) - 1));
 }
-
