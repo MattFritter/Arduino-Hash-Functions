@@ -1,6 +1,6 @@
 /* Pearson Hash
  * An implementation of the Pearson Hashing algorithm for the Arduino microcontroller that produces a 32 bit output hash
- * Output is in the form an 8 character hexidecimal string
+ * Output is in the form an 8 character hexadecimal string
  * Author: Matthew Fritter
  */
 

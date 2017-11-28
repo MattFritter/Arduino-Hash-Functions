@@ -2,7 +2,7 @@
  * An implementation of the Cyclic Redundancy Check (CRC) algorithm for the Arduino microcontroller that produces a 32 bit output checksum
  * This implementation is designed to comply with RFC 1952, producing the same checksum output as the implementations used for
  * PNG (Portable Network Graphics) and the PKZIP/GZIP utilities.
- * Output is in the form an 8 character hexidecimal string
+ * Output is in the form an 8 character hexadecimal string
  * Author: Matthew Fritter
  */
 
