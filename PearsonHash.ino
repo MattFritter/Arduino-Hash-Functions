@@ -18,7 +18,7 @@ void setup(){
  */
 String hashPearson(byte* message, byte* permutationTable, int arraySize){
   String output = "";
-  char buffer[2];
+  char buffer[3];
   for(int i = 0; i < 4; i++){
     byte hash = permutationTable[(message[0] + i) % 256];
     for(int j = 0; j < arraySize; j++){
@@ -33,6 +33,6 @@ String hashPearson(byte* message, byte* permutationTable, int arraySize){
 /* For a given test string, print the 32 bit Pearson hash over Serial */
 void loop(){
   byte testString[] = "Hello World";
-  Serial.println(hashPearson(testString, permutationTable, sizeof(testString)));
+  Serial.println(hashPearson(testString, permutationTable, sizeof(testString) - 1));
 }
 
