@@ -21,7 +21,7 @@ String hashPearson(byte* message, byte* permutationTable, int arraySize){
   char buffer[2];
   for(int i = 0; i < 4; i++){
     byte hash = permutationTable[(message[0] + i) % 256];
-    for(int j = 0; j <= arraySize; j++){
+    for(int j = 0; j < arraySize; j++){
       hash = permutationTable[(hash ^ message[j]) % 256];
     }
     sprintf(buffer, "%02X", hash);
