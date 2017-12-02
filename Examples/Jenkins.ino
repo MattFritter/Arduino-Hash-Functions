@@ -10,7 +10,7 @@ void setup(){
   Serial.begin(9600);
 }
 
-/* Perforam Jenkins One-At-A-Time hashing. Initial hash value is zero, and each iteration the hash is combined
+/* Perform Jenkins One-At-A-Time hashing. Initial hash value is zero, and each iteration the hash is combined
  * with a byte from the message, and recombined with the hash shifted left 10, before being XORed with the hash 
  * shifted right 6. After all bytes of the message have been handled, the hash goes through a final combination
  * with the hash shifted left 3, XORed with the hash shifted right 11, and then combined once more with the hash

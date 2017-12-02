@@ -25,11 +25,10 @@ String sdbm(byte* message, size_t arraySize){
   for(int i = 0; i < arraySize; i++){
     hash = message[i] + (hash << 6) + (hash >> 16) - hash;
   }
-  sprintf(buffer, "%lux", hash);
-  //uint16_t sdbm1 = hash >> 16;
-  //uint16_t sdbm2 = hash & 0xFFFF;
-  //sprintf(buffer, "%04X", sdbm1);
-  //sprintf(buffer+4, "%04X", sdbm2);
+  uint16_t sdbm1 = hash >> 16;
+  uint16_t sdbm2 = hash & 0xFFFF;
+  sprintf(buffer, "%04X", sdbm1);
+  sprintf(buffer+4, "%04X", sdbm2);
   output.concat(buffer);
   return output;
 }
