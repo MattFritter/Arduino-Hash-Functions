@@ -12,7 +12,7 @@ class pearson
  {
 	public:
 		pearson();
-		uint32_t hash(uint8_t* message, uint8_t* permutationTable, size_t arraySize);
+		uint32_t hash(uint8_t* message, size_t arraySize);
 	private:
 		uint8_t round;
 		uint32_t _hash;
@@ -23,7 +23,7 @@ class crc32
  {
 	public:
 		crc32();
-		uint32_t hash(uint8_t* message, size_t arraySize);
+		uint32_t hash(uint32_t crc, uint8_t* message, size_t arraySize);
 	private:
 		uint32_t _hash;
 		uint32_t computeCRC(int i);

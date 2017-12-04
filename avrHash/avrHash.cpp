@@ -13,16 +13,16 @@
 
 const uint32_t sine[] PROGMEM = {0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501, 0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be, 0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821, 0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa, 0xd62f105d, 0x02441453, 0xd8a1e681, 0xe7d3fbc8, 0x21e1cde6, 0xc33707d6, 0xf4d50d87, 0x455a14ed, 0xa9e3e905, 0xfcefa3f8, 0x676f02d9, 0x8d2a4c8a, 0xfffa3942, 0x8771f681, 0x6d9d6122, 0xfde5380c, 0xa4beea44, 0x4bdecfa9, 0xf6bb4b60, 0xbebfbc70, 0x289b7ec6, 0xeaa127fa, 0xd4ef3085, 0x04881d05, 0xd9d4d039, 0xe6db99e5, 0x1fa27cf8, 0xc4ac5665, 0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039, 0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1, 0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1, 0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
 const uint8_t offset[] PROGMEM = {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21};   
-  
+const uint8_t permutationTable[] PROGMEM = {15, 34, 223, 6, 104, 9, 202, 46, 194, 236, 95, 169, 120, 227, 92, 144, 123, 167, 30, 42, 68, 60, 131, 65, 79, 239, 160, 174, 99, 204, 52, 230, 96, 186, 219, 244, 91, 197, 53, 64, 43, 80, 127, 84, 22, 155, 56, 106, 249, 39, 133, 195, 82, 78, 21, 61, 86, 59, 158, 218, 107, 3, 211, 90, 44, 137, 26, 17, 112, 81, 253, 132, 38, 66, 1, 168, 213, 190, 89, 252, 182, 150, 183, 20, 243, 49, 153, 13, 178, 149, 118, 31, 181, 134, 35, 206, 245, 138, 141, 157, 24, 108, 93, 83, 212, 187, 226, 94, 247, 45, 238, 2, 171, 100, 32, 196, 240, 41, 214, 110, 161, 0, 216, 117, 33, 231, 184, 19, 57, 76, 246, 130, 85, 8, 29, 241, 176, 126, 10, 248, 63, 75, 159, 201, 203, 119, 27, 36, 48, 228, 135, 70, 165, 225, 148, 180, 145, 232, 172, 101, 124, 237, 209, 221, 62, 67, 166, 88, 193, 128, 28, 18, 156, 179, 5, 116, 14, 109, 177, 139, 11, 235, 188, 98, 224, 113, 191, 242, 4, 71, 136, 233, 40, 125, 192, 69, 74, 23, 55, 208, 205, 97, 163, 114, 220, 229, 105, 162, 254, 198, 217, 143, 147, 189, 255, 210, 175, 51, 12, 77, 170, 37, 199, 164, 103, 122, 102, 185, 207, 146, 54, 121, 50, 142, 129, 111, 58, 222, 152, 154, 215, 16, 173, 73, 250, 200, 25, 234, 151, 87, 115, 47, 72, 7, 140, 251};
 
 pearson::pearson(){}
 
-uint32_t pearson::hash(uint8_t* message, uint8_t* permutationTable, size_t arraySize){
+uint32_t pearson::hash(uint8_t* message, size_t arraySize){
   uint32_t _hash = 0;
   for(int i = 0; i < 4; i++){
-    uint8_t round = permutationTable[(message[0] + i) % 256];
+    uint8_t round = pgm_read_byte_near(permutationTable + ((message[0] + i) % 256));
     for(int j = 0; j < arraySize; j++){
-      round = permutationTable[(round ^ message[j]) % 256];
+      round = pgm_read_byte_near(permutationTable + ((round ^ message[j]) % 256));
     }
     _hash |= ((uint32_t)round << (i << 3));
   }
@@ -31,24 +31,24 @@ uint32_t pearson::hash(uint8_t* message, uint8_t* permutationTable, size_t array
 
 crc32::crc32(){}
 
-uint32_t crc32::hash(uint8_t* message, size_t arraySize){
-  uint32_t _hash = 0xFFFFFF;
+uint32_t crc32::hash(uint32_t crc, uint8_t* message, size_t arraySize){
+  uint32_t _hash = ~crc;
   for(int i = 0; i < arraySize; i++){
     _hash = (_hash >> 8) ^ computeCRC((_hash & 0xff) ^ message[i]);
   }
-  return _hash;
+  return ~_hash;
 }
 
 uint32_t crc32::computeCRC(int i){
-	uint32_t remainder = i;
-	for (int j = 0; j < 8; j++){
-		if (remainder & 1){
-			remainder = 0xEDB88320 ^ (remainder >> 1);
-		}else{
-			remainder >>= 1;
-		}
-	}
-	return remainder;
+  uint32_t remainder = i;
+  for (int j = 0; j < 8; j++){
+    if (remainder & 1){
+      remainder = 0xEDB88320 ^ (remainder >> 1);
+    }else{
+      remainder >>= 1;
+    }
+  }
+  return remainder;
 }
 
 sdbm::sdbm(){}
@@ -56,7 +56,7 @@ sdbm::sdbm(){}
 uint32_t sdbm::hash(uint8_t* message, size_t arraySize){
   uint32_t _hash = 0;
   for(int i = 0; i < arraySize; i++){
-    _hash = message[i] + (_hash << 6) + (_hash >> 16) - _hash;
+    _hash = message[i] + (_hash << 6) + (_hash << 16) - _hash;
   }
   return _hash;
 }

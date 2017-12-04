@@ -1,9 +1,9 @@
 #include <avrHash.h>
 
-pearson hashFunc;
+//pearson hashFunc;
 //jenkins hashFunc;
 //fnv1a hashFunc;
-//crc32 hashFunc;
+crc32 hashFunc;
 //sdbm hashFunc;
 //lookup3 hashFunc;
 //md5 hashFunc;
@@ -20,7 +20,7 @@ void setup() {
      long InitTime = micros();
      uint32_t val;
      for(int j = 0; j < sampleSize; j++){
-         val = hashFunc.hash(bytes, i);
+         val = hashFunc.hash(0, bytes, i);
      }
      long totalTime = micros() - InitTime;
      Serial.print(i);

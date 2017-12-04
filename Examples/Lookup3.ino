@@ -148,7 +148,10 @@ void setup(){
   Serial.begin(9600);
 }
 
-/* For a given test string, print the 32 bit Lookup3 hash over Serial */
+/* For a given test string, print the 32 bit Lookup3 hash over Serial
+ * If correct, the input "Four score and seven years ago" should return
+ * A hash of 0xCD628161
+ */
 void loop()
 {
   uint32_t c = lookup3("Four score and seven years ago", 30, 1);

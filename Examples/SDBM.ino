@@ -23,7 +23,7 @@ String sdbm(byte* message, size_t arraySize){
   char buffer[9];
   uint32_t hash = 0;
   for(int i = 0; i < arraySize; i++){
-    hash = message[i] + (hash << 6) + (hash >> 16) - hash;
+    hash = message[i] + (hash << 6) + (hash << 16) - hash;
   }
   uint16_t sdbm1 = hash >> 16;
   uint16_t sdbm2 = hash & 0xFFFF;
@@ -34,6 +34,8 @@ String sdbm(byte* message, size_t arraySize){
 }
 
 /* For a given test string, print the 32 bit SDBM hash over Serial
+ * For a given input of "Hello World", the returned hash should be
+ * 0xC908F484
  */
 void loop(){
   byte testString[] = "Hello World";

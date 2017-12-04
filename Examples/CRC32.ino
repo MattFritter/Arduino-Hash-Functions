@@ -2,35 +2,27 @@
  * An implementation of the Cyclic Redundancy Check (CRC) algorithm for the Arduino microcontroller that produces a 32 bit output checksum
  * This implementation is designed to comply with RFC 1952, producing the same checksum output as the implementations used for
  * PNG (Portable Network Graphics) and the PKZIP/GZIP utilities.
- * Output is in the form an 8 character hexadecimal string
+ * Output is in the form an 8 character hexidecimal string
  * Author: Matthew Fritter
  */
-
-/* Lookup table stores 256 unsigned 32 bit integers, for holding precomputed CRC checksums for 1 byte values */
-uint32_t lookupTable[256];
 
 /* Begin Serial Monitor Connection, precompute the lookupTable */
 void setup(){
   Serial.begin(9600);
-  buildTable(lookupTable);
 }
 
-/* Precomputes a table of all possible CRCs for 8-bit messages (256 possible values)
- * Uses 0xEDB88320 as the polynomial constant
+/* Computes the CRC value for a given input integer
  */
-void buildTable(uint32_t* table){
-  uint32_t remainder = 0;
-  for (int i = 0; i < 256; i++){
-      remainder = i;
-      for (int j = 0; j < 8; j++){
-        if (remainder & 1){
-          remainder = 0xEDB88320 ^ (remainder >> 1);
-        }else{
-          remainder >>= 1;
-        }
-      }
-      table[i] = remainder;
+uint32_t computeCRC(int i){
+  uint32_t remainder = i;
+  for (int j = 0; j < 8; j++){
+    if (remainder & 1){
+      remainder = 0xEDB88320 ^ (remainder >> 1);
+    }else{
+      remainder >>= 1;
     }
+  }
+  return remainder;
 }
 
 /* Calculate the 32 bit CRC checksum for an input message of length arraySize using the lookupTable
@@ -40,12 +32,12 @@ void buildTable(uint32_t* table){
  * then returns an 8 character hexadecimal representative string
  */
 
-String crc32(uint32_t crc, uint32_t* table, byte* message, size_t arraySize){
+String crc32(uint32_t crc, byte* message, size_t arraySize){
   String output = "";
   char buffer[9];
   crc = ~crc;
   for(int i = 0; i < arraySize; i++){
-    crc = (crc >> 8) ^ table[(crc & 0xff) ^ message[i]];
+    crc = (crc >> 8) ^ computeCRC((crc & 0xff) ^ message[i]);
   }
   uint16_t crc1 = ~crc >> 16;
   uint16_t crc2 = ~crc & 0xFFFF;
@@ -63,5 +55,5 @@ String crc32(uint32_t crc, uint32_t* table, byte* message, size_t arraySize){
  */
 void loop(){
   byte testString[] = "The quick brown fox jumps over the lazy dog";
-  Serial.println(crc32(0, lookupTable, testString, sizeof(testString) - 1));
+  Serial.println(crc32(0, testString, sizeof(testString) - 1));
 }
